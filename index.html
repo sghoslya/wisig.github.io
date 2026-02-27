@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiSig Networks — Global-Standard 5G Open RAN. Designed and Engineered in India.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --w-ink: #080b12;
+  --w-charcoal: #111827;
+  --w-slate: #1e2a3a;
+  --w-steel: #374151;
+  --w-muted: #6b7b8f;
+  --w-silver: #94a3b8;
+  --w-pearl: #cbd5e1;
+  --w-snow: #f1f5f9;
+  --w-white: #ffffff;
+  --w-blue: #2563eb;
+  --w-blue-bright: #3b82f6;
+  --w-blue-deep: #1d4ed8;
+  --w-blue-glow: rgba(37,99,235,0.15);
+  --w-amber: #f59e0b;
+  --w-amber-glow: rgba(245,158,11,0.12);
+  --w-emerald: #10b981;
+  --w-emerald-glow: rgba(16,185,129,0.12);
+  --w-saffron: #f97316;
+  --w-green: #16a34a;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+::selection { background: var(--w-blue); color: white; }
+body {
+  font-family: 'Sora', sans-serif;
+  color: var(--w-charcoal);
+  background: var(--w-white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.3;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { text-decoration: none; color: inherit; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* Animations */
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+@keyframes pulseGlow { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
+@keyframes gridFloat { 0% { transform: translate(0,0); } 50% { transform: translate(-5px,-12px); } 100% { transform: translate(0,0); } }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 64px;
+  background: rgba(8,11,18,0.7);
+  backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.4s;
+}
+nav.scrolled { background: rgba(8,11,18,0.92); }
+.nav-logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1rem; color: var(--w-white); letter-spacing: -0.02em; }
+.nav-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--w-blue), var(--w-blue-bright)); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.7rem; color: white; }
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a { font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.55); transition: color 0.25s; letter-spacing: 0.01em; }
+.nav-links a:hover { color: rgba(255,255,255,0.95); }
+.nav-cta { padding: 8px 20px; background: var(--w-white); color: var(--w-ink) !important; border-radius: 8px; font-weight: 600; font-size: 0.78rem; transition: all 0.25s; }
+.nav-cta:hover { background: var(--w-snow); transform: translateY(-1px); }
+.mobile-toggle { display: none; cursor: pointer; background: none; border: none; padding: 6px; }
+.mobile-toggle svg { width: 22px; height: 22px; stroke: white; }
+
+/* MWC Banner */
+.mwc-banner {
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 999;
+  padding: 10px 24px;
+  background: linear-gradient(90deg, #1e1b4b, #312e81, #1e1b4b);
+  border-bottom: 1px solid rgba(99,102,241,0.3);
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: 0.76rem; color: rgba(255,255,255,0.85);
+}
+.mwc-banner strong { color: white; font-weight: 600; }
+.mwc-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: rgba(99,102,241,0.25); border-radius: 20px; font-size: 0.68rem; font-weight: 600; color: #a5b4fc; }
+.mwc-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #818cf8; animation: pulseGlow 2s infinite; }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; align-items: center; padding: 140px 0 80px; background: var(--w-ink); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px); background-size: 80px 80px; animation: gridFloat 40s ease-in-out infinite; }
+.hero::after { content: ''; position: absolute; top: -30%; right: -20%; width: 900px; height: 900px; background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0.02) 40%, transparent 70%); border-radius: 50%; pointer-events: none; }
+.hero-content { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 420px; gap: 80px; align-items: center; }
+.hero-text { max-width: 640px; }
+.hero-phase { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; background: var(--w-emerald-glow); border: 1px solid rgba(16,185,129,0.2); border-radius: 24px; font-size: 0.72rem; font-weight: 600; color: var(--w-emerald); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 28px; }
+.hero-phase .phase-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--w-emerald); animation: pulseGlow 2s infinite; }
+.hero h1 { font-size: 3.6rem; font-weight: 700; line-height: 1.08; color: var(--w-white); letter-spacing: -0.03em; margin-bottom: 24px; }
+.hero h1 .em-line { display: block; background: linear-gradient(135deg, var(--w-blue-bright), #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-narrative { font-family: 'Newsreader', Georgia, serif; font-size: 1.15rem; line-height: 1.75; color: rgba(255,255,255,0.5); margin-bottom: 36px; max-width: 540px; font-style: italic; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s; cursor: pointer; border: none; font-family: 'Sora', sans-serif; }
+.btn-primary { background: var(--w-blue); color: white; }
+.btn-primary:hover { background: var(--w-blue-deep); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.3); }
+.btn-outline { background: transparent; color: rgba(255,255,255,0.7); border: 1.5px solid rgba(255,255,255,0.15); }
+.btn-outline:hover { border-color: rgba(255,255,255,0.4); color: white; }
+.btn-blue { background: var(--w-blue); color: white; }
+.btn-blue:hover { background: var(--w-blue-deep); transform: translateY(-1px); }
+.btn-dark { background: var(--w-charcoal); color: white; border: 1.5px solid rgba(255,255,255,0.08); }
+.btn-dark:hover { background: var(--w-slate); }
+.hero-credentials { display: flex; flex-wrap: wrap; gap: 20px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+.hero-cred { display: flex; flex-direction: column; gap: 4px; }
+.hero-cred-val { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--w-white); }
+.hero-cred-label { font-size: 0.68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+
+/* Hero Status Card */
+.hero-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-lg); padding: 32px; backdrop-filter: blur(8px); }
+.hero-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.hero-card-header .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--w-emerald); animation: pulseGlow 2s infinite; }
+.hero-card-header span { font-size: 0.72rem; font-weight: 600; color: var(--w-emerald); text-transform: uppercase; letter-spacing: 0.06em; }
+.status-rows { display: flex; flex-direction: column; gap: 10px; }
+.status-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); }
+.status-row-label { font-size: 0.76rem; color: rgba(255,255,255,0.45); font-weight: 500; }
+.status-row-val { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 600; color: var(--w-white); }
+.status-row-val.green { color: var(--w-emerald); }
+.status-row-val.blue { color: var(--w-blue-bright); }
+.status-row-val.amber { color: var(--w-amber); }
+.hero-card-certs { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; gap: 6px; }
+.cert-chip { padding: 4px 10px; border-radius: 6px; font-size: 0.64rem; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+
+/* Trust Bar */
+.trust-bar { padding: 40px 0; background: var(--w-ink); border-top: 1px solid rgba(255,255,255,0.04); }
+.trust-inner { display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
+.trust-item { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; }
+.trust-item.highlight { color: rgba(255,255,255,0.4); }
+
+/* Section System */
+section { padding: 100px 0; position: relative; }
+.sec-overline { display: inline-flex; align-items: center; gap: 8px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--w-blue); margin-bottom: 16px; }
+.sec-overline::before { content: ''; width: 24px; height: 2px; background: var(--w-blue); border-radius: 1px; }
+.sec-title { font-size: 2.4rem; font-weight: 700; line-height: 1.15; color: var(--w-ink); letter-spacing: -0.025em; margin-bottom: 16px; }
+.sec-desc { font-size: 1rem; line-height: 1.7; color: var(--w-muted); max-width: 600px; }
+.sec-title.light { color: var(--w-white); }
+.sec-desc.light { color: rgba(255,255,255,0.5); }
+.sec-overline.light { color: var(--w-blue-bright); }
+.sec-overline.light::before { background: var(--w-blue-bright); }
+
+/* Narrative Section */
+.narrative-section { padding: 100px 0; background: var(--w-white); }
+.narrative-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.narrative-text p { font-family: 'Newsreader', Georgia, serif; font-size: 1.1rem; line-height: 1.85; color: var(--w-steel); margin-bottom: 20px; }
+.narrative-text p strong { color: var(--w-charcoal); font-weight: 600; }
+.narrative-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 36px; }
+.n-metric { padding: 24px; background: var(--w-snow); border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.04); }
+.n-metric-val { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--w-ink); margin-bottom: 4px; }
+.n-metric-label { font-size: 0.72rem; color: var(--w-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+.timeline-col { position: relative; padding-left: 32px; }
+.timeline-col::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--w-blue), var(--w-emerald)); border-radius: 1px; }
+.timeline-item { position: relative; padding: 20px 0 32px; }
+.timeline-item::before { content: ''; position: absolute; left: -37px; top: 26px; width: 12px; height: 12px; border-radius: 50%; background: var(--w-white); border: 3px solid var(--w-blue); }
+.timeline-item:last-child::before { border-color: var(--w-emerald); background: var(--w-emerald); }
+.timeline-year { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--w-blue); margin-bottom: 6px; }
+.timeline-event { font-size: 0.88rem; font-weight: 600; color: var(--w-charcoal); margin-bottom: 4px; }
+.timeline-desc { font-size: 0.78rem; color: var(--w-muted); line-height: 1.6; }
+
+/* ULPI Section */
+.ulpi-section { padding: 100px 0; background: linear-gradient(180deg, var(--w-ink) 0%, #0c1425 100%); position: relative; overflow: hidden; }
+.ulpi-section::before { content: ''; position: absolute; top: 0; right: 0; width: 600px; height: 600px; background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+.ulpi-header { text-align: center; max-width: 720px; margin: 0 auto 60px; }
+.ulpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px; }
+.ulpi-card { padding: 32px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg); transition: border-color 0.3s; }
+.ulpi-card:hover { border-color: rgba(37,99,235,0.2); }
+.ulpi-card-label { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+.ulpi-card-label.a { background: var(--w-blue-glow); color: var(--w-blue-bright); border: 1px solid rgba(37,99,235,0.2); }
+.ulpi-card-label.b { background: var(--w-amber-glow); color: var(--w-amber); border: 1px solid rgba(245,158,11,0.2); }
+.ulpi-card h4 { font-size: 1.1rem; font-weight: 700; color: var(--w-white); margin-bottom: 10px; }
+.ulpi-card p { font-size: 0.85rem; line-height: 1.7; color: rgba(255,255,255,0.45); }
+.ulpi-impact { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ulpi-stat { text-align: center; padding: 28px 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius); }
+.ulpi-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: var(--w-blue-bright); margin-bottom: 6px; }
+.ulpi-stat-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+.global-context { margin-top: 48px; padding: 28px 32px; background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.12); border-radius: var(--radius); display: flex; align-items: flex-start; gap: 16px; }
+.global-context-icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px; background: rgba(245,158,11,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.global-context h5 { font-size: 0.88rem; font-weight: 700; color: var(--w-amber); margin-bottom: 6px; }
+.global-context p { font-size: 0.82rem; line-height: 1.65; color: rgba(255,255,255,0.45); }
+
+/* Products */
+.products-section { padding: 100px 0; background: var(--w-snow); }
+.products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+.product-card { background: var(--w-white); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg); padding: 36px; transition: all 0.35s; position: relative; overflow: hidden; }
+.product-card:hover { border-color: rgba(37,99,235,0.15); box-shadow: 0 12px 40px rgba(0,0,0,0.06); transform: translateY(-4px); }
+.product-card.flagship { border-color: rgba(37,99,235,0.12); background: linear-gradient(180deg, var(--w-white) 0%, rgba(37,99,235,0.02) 100%); }
+.product-card.flagship::before { content: 'FLAGSHIP'; position: absolute; top: 16px; right: 16px; padding: 3px 8px; border-radius: 4px; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; background: var(--w-blue); color: white; }
+.pc-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 20px; }
+.pc-icon.blue { background: var(--w-blue-glow); }
+.pc-icon.emerald { background: var(--w-emerald-glow); }
+.product-card h3 { font-size: 1.15rem; font-weight: 700; color: var(--w-ink); margin-bottom: 8px; }
+.product-card .pc-sub { font-size: 0.78rem; font-weight: 500; color: var(--w-blue); margin-bottom: 12px; }
+.product-card p { font-size: 0.84rem; line-height: 1.7; color: var(--w-muted); margin-bottom: 16px; }
+.pc-specs { display: flex; flex-wrap: wrap; gap: 6px; }
+.pc-spec { padding: 4px 10px; border-radius: 6px; font-size: 0.66rem; font-weight: 600; background: var(--w-snow); color: var(--w-steel); }
+
+/* Architecture */
+.arch-section { padding: 80px 0; background: var(--w-snow); border-top: 1px solid rgba(0,0,0,0.04); }
+.arch-flow { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 40px; }
+.arch-node { padding: 20px 24px; background: var(--w-white); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius); text-align: center; min-width: 140px; transition: all 0.3s; }
+.arch-node:hover { border-color: var(--w-blue); box-shadow: 0 4px 16px rgba(37,99,235,0.08); }
+.arch-node.active { border-color: var(--w-blue); background: var(--w-blue-glow); }
+.arch-node-icon { font-size: 1.3rem; margin-bottom: 8px; }
+.arch-node-name { font-size: 0.82rem; font-weight: 700; color: var(--w-ink); margin-bottom: 4px; }
+.arch-node-detail { font-size: 0.68rem; color: var(--w-muted); line-height: 1.5; }
+.arch-arrow { font-size: 1.2rem; color: var(--w-pearl); transform: scaleX(1.5); }
+
+/* Specs */
+.specs-section { padding: 100px 0; background: var(--w-white); }
+.specs-headline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 48px 0; }
+.spec-hero { padding: 28px; text-align: center; background: var(--w-ink); border-radius: var(--radius); }
+.spec-hero-val { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--w-white); margin-bottom: 4px; }
+.spec-hero-label { font-size: 0.68rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+.specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.spec-card { background: var(--w-snow); border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); overflow: hidden; }
+.spec-card-header { padding: 16px 24px; background: var(--w-ink); font-size: 0.82rem; font-weight: 700; color: var(--w-white); display: flex; align-items: center; gap: 10px; }
+.spec-card-header .icon { font-size: 1rem; }
+.spec-rows { padding: 4px 0; }
+.spec-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 24px; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.8rem; }
+.spec-row:last-child { border-bottom: none; }
+.spec-row .key { color: var(--w-muted); font-weight: 500; }
+.spec-row .val { color: var(--w-charcoal); font-weight: 600; text-align: right; }
+.spec-row .val.highlight { color: var(--w-blue); }
+.compliance-strip { margin-top: 32px; padding: 24px; background: var(--w-snow); border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.comp-chip { padding: 6px 14px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; background: var(--w-white); border: 1px solid rgba(0,0,0,0.06); color: var(--w-steel); }
+.comp-chip.glow { background: var(--w-blue-glow); border-color: rgba(37,99,235,0.15); color: var(--w-blue); }
+
+/* Deployments */
+.deploy-section { padding: 100px 0; background: var(--w-white); }
+.deploy-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 48px 0 40px; }
+.deploy-stat { text-align: center; padding: 24px 12px; background: var(--w-snow); border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.03); }
+.deploy-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--w-ink); margin-bottom: 4px; }
+.deploy-stat-label { font-size: 0.66rem; color: var(--w-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+.deploy-cards { display: flex; flex-direction: column; gap: 20px; }
+.deploy-card { display: grid; grid-template-columns: 160px 1fr; gap: 28px; padding: 28px; background: var(--w-snow); border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius-lg); align-items: center; transition: all 0.3s; }
+.deploy-card:hover { border-color: rgba(37,99,235,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+.deploy-card-visual { width: 160px; height: 120px; background: var(--w-ink); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.deploy-card-visual .icon { font-size: 2rem; }
+.deploy-card-visual .tag { font-size: 0.6rem; font-weight: 700; color: var(--w-emerald); text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 8px; border-radius: 4px; background: rgba(16,185,129,0.15); }
+.deploy-card-body h4 { font-size: 1rem; font-weight: 700; color: var(--w-ink); margin-bottom: 6px; }
+.deploy-card-body .deploy-type { font-size: 0.72rem; font-weight: 600; color: var(--w-blue); margin-bottom: 8px; }
+.deploy-card-body p { font-size: 0.82rem; line-height: 1.65; color: var(--w-muted); margin-bottom: 10px; }
+.deploy-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.deploy-chip { padding: 3px 8px; border-radius: 4px; font-size: 0.62rem; font-weight: 600; background: var(--w-white); border: 1px solid rgba(0,0,0,0.06); color: var(--w-steel); }
+.validation-banner { margin-top: 32px; padding: 24px 32px; background: linear-gradient(135deg, var(--w-ink), var(--w-slate)); border-radius: var(--radius); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.validation-banner h4 { font-size: 0.92rem; font-weight: 700; color: var(--w-white); }
+.validation-banner p { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+.validation-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.v-badge { padding: 6px 12px; border-radius: 6px; font-size: 0.68rem; font-weight: 600; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+.showcase-row { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.showcase-chip { padding: 8px 16px; border-radius: 8px; font-size: 0.74rem; font-weight: 600; background: var(--w-snow); border: 1px solid rgba(0,0,0,0.04); color: var(--w-steel); }
+
+/* Quote */
+.quote-section { padding: 80px 0; background: var(--w-ink); }
+.quote-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+.quote-text { font-family: 'Newsreader', Georgia, serif; font-size: 1.3rem; line-height: 1.7; color: rgba(255,255,255,0.7); font-style: italic; margin-bottom: 24px; }
+.quote-attr { font-size: 0.82rem; font-weight: 600; color: var(--w-white); }
+.quote-attr-role { font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+/* Portfolio */
+.portfolio-section { padding: 100px 0; background: var(--w-ink); }
+.portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+.port-card { padding: 36px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg); transition: border-color 0.3s; }
+.port-card:hover { border-color: rgba(255,255,255,0.12); }
+.port-card.full { grid-column: 1 / -1; }
+.port-card-overline { font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
+.port-card-overline.blue { color: var(--w-blue-bright); }
+.port-card-overline.amber { color: var(--w-amber); }
+.port-card-overline.emerald { color: var(--w-emerald); }
+.port-card h3 { font-size: 1.3rem; font-weight: 700; color: var(--w-white); margin-bottom: 10px; }
+.port-card p { font-size: 0.85rem; line-height: 1.7; color: rgba(255,255,255,0.45); margin-bottom: 16px; }
+.port-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.port-tag { padding: 4px 10px; border-radius: 6px; font-size: 0.64rem; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+.port-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+.port-mini { padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; text-align: center; }
+.port-mini .icon { font-size: 1.2rem; margin-bottom: 6px; }
+.port-mini h5 { font-size: 0.76rem; font-weight: 600; color: var(--w-white); margin-bottom: 3px; }
+.port-mini p { font-size: 0.66rem; color: rgba(255,255,255,0.35); margin-bottom: 0; line-height: 1.5; }
+
+/* IP & 6G */
+.ip-section { padding: 100px 0; background: var(--w-snow); }
+.ip-banner { padding: 40px; background: linear-gradient(135deg, var(--w-ink), #0f1f3d); border-radius: var(--radius-lg); text-align: center; margin-bottom: 48px; }
+.ip-banner-val { font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 800; color: var(--w-white); margin-bottom: 8px; }
+.ip-banner p { font-size: 0.88rem; color: rgba(255,255,255,0.45); max-width: 600px; margin: 0 auto 20px; }
+.ip-orgs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ip-org { padding: 5px 12px; border-radius: 6px; font-size: 0.68rem; font-weight: 600; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+.sixg-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.sixg-card { padding: 28px; background: var(--w-white); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius); transition: all 0.3s; }
+.sixg-card:hover { border-color: rgba(37,99,235,0.12); box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+.sixg-card-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.sixg-card-tag.blue { background: var(--w-blue-glow); color: var(--w-blue); }
+.sixg-card-tag.amber { background: var(--w-amber-glow); color: var(--w-amber); }
+.sixg-card-tag.emerald { background: var(--w-emerald-glow); color: var(--w-emerald); }
+.sixg-card h4 { font-size: 1rem; font-weight: 700; color: var(--w-ink); margin-bottom: 8px; }
+.sixg-card p { font-size: 0.8rem; line-height: 1.65; color: var(--w-muted); }
+
+/* News */
+.news-section { padding: 100px 0; background: var(--w-white); }
+.news-headline { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; margin: 48px 0 32px; padding: 32px; background: var(--w-snow); border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.04); }
+.news-headline iframe { width: 100%; aspect-ratio: 16/9; border-radius: var(--radius); border: none; }
+.nh-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.64rem; font-weight: 700; background: var(--w-amber-glow); color: var(--w-amber); border: 1px solid rgba(245,158,11,0.15); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.news-headline h4 { font-size: 1.2rem; font-weight: 700; color: var(--w-ink); margin-bottom: 10px; }
+.news-headline p { font-size: 0.85rem; line-height: 1.7; color: var(--w-muted); }
+.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.news-card { padding: 24px; background: var(--w-snow); border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); transition: all 0.3s; }
+.news-card:hover { border-color: rgba(37,99,235,0.1); }
+.nc-source { font-size: 0.66rem; font-weight: 600; color: var(--w-blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.nc-title { font-size: 0.9rem; font-weight: 700; color: var(--w-ink); margin-bottom: 8px; line-height: 1.4; }
+.nc-excerpt { font-size: 0.78rem; line-height: 1.6; color: var(--w-muted); }
+
+/* CTA */
+.cta-section { padding: 100px 0; background: linear-gradient(180deg, var(--w-snow) 0%, var(--w-white) 100%); }
+.cta-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.contact-details { display: flex; gap: 32px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+.cd-item { display: flex; align-items: center; gap: 12px; font-size: 0.8rem; color: var(--w-muted); }
+.cd-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--w-snow); border: 1px solid rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+
+/* Footer */
+footer { padding: 40px 0 32px; background: var(--w-ink); text-align: center; }
+footer .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-bottom: 24px; }
+footer .footer-links a { font-size: 0.76rem; color: rgba(255,255,255,0.35); font-weight: 500; transition: color 0.25s; }
+footer .footer-links a:hover { color: rgba(255,255,255,0.7); }
+.footer-tricolor { height: 3px; display: flex; margin-bottom: 20px; }
+.footer-tricolor div { flex: 1; }
+.tc-s { background: var(--w-saffron); }
+.tc-w { background: var(--w-white); }
+.tc-g { background: var(--w-green); }
+footer p { font-size: 0.68rem; color: rgba(255,255,255,0.2); }
+
+/* Responsive */
+@media (max-width: 960px) {
+  .hero-content { grid-template-columns: 1fr; gap: 40px; }
+  .hero h1 { font-size: 2.6rem; }
+  .hero-card { max-width: 480px; }
+  .narrative-grid { grid-template-columns: 1fr; gap: 48px; }
+  .products-grid { grid-template-columns: 1fr 1fr; }
+  .ulpi-grid { grid-template-columns: 1fr; }
+  .ulpi-impact { grid-template-columns: 1fr 1fr; }
+  .specs-headline { grid-template-columns: 1fr 1fr; }
+  .specs-grid { grid-template-columns: 1fr; }
+  .deploy-stats { grid-template-columns: repeat(3, 1fr); }
+  .deploy-card { grid-template-columns: 1fr; }
+  .deploy-card-visual { width: 100%; height: 80px; }
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .port-card-grid { grid-template-columns: 1fr 1fr; }
+  .sixg-cards { grid-template-columns: 1fr 1fr; }
+  .news-headline { grid-template-columns: 1fr; }
+  .news-grid { grid-template-columns: 1fr 1fr; }
+  .sec-title { font-size: 2rem; }
+}
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  nav.open .nav-links { display: flex; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: rgba(8,11,18,0.97); padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .mobile-toggle { display: block; }
+  .mwc-banner { top: 64px; flex-direction: column; gap: 6px; text-align: center; }
+  .hero { padding: 160px 24px 60px; }
+  .hero h1 { font-size: 2rem; }
+  .hero-narrative { font-size: 1rem; }
+  .hero-card { display: none; }
+  .trust-inner { gap: 24px; }
+  .products-grid { grid-template-columns: 1fr; }
+  .deploy-stats { grid-template-columns: 1fr 1fr; }
+  .port-card-grid { grid-template-columns: 1fr; }
+  .sixg-cards { grid-template-columns: 1fr; }
+  .news-grid { grid-template-columns: 1fr; }
+  section { padding: 64px 0; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#home" class="nav-logo">
+    <div class="nav-logo-mark">W</div>
+    WiSig Networks
+  </a>
+  <div class="nav-links">
+    <a href="#technology">Technology</a>
+    <a href="#products">Products</a>
+    <a href="#deployments">Deployments</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#news">News</a>
+    <a href="#research">Research</a>
+    <a href="#contact" class="nav-cta">Contact Us</a>
+  </div>
+  <button class="mobile-toggle" id="mobileToggle">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</nav>
+
+<div class="mwc-banner">
+  <div class="mwc-pill"><span class="dot"></span> LIVE AT MWC</div>
+  <span><strong>MWC Barcelona 2026</strong> — Production 32T32R ULPI radios at Altera Booth, Hall 3 #3D5Ex</span>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-phase reveal">
+          <span class="phase-dot"></span>
+          Advanced Validation Phase
+        </div>
+        <h1 class="reveal reveal-delay-1">
+          Global-standard 5G Open RAN.<br>
+          <span class="em-line">Designed and engineered in India.</span>
+        </h1>
+        <p class="hero-narrative reveal reveal-delay-2">
+          WiSig Networks has completed multi-site PoC validations of its full-stack 5G Open RAN
+          platform — Massive MIMO radio, cloud-native baseband, and standalone core. Following
+          2.5 years of structured C-DOT qualification testing and 22+ live field sites, the
+          platform is now entering extended operator validation prior to commercial scale deployment.
+        </p>
+        <div class="hero-actions reveal reveal-delay-3">
+          <a href="#technology" class="btn btn-primary">Explore Technology →</a>
+          <a href="#deployments" class="btn btn-outline">View Deployments</a>
+        </div>
+        <div class="hero-credentials reveal reveal-delay-4">
+          <div class="hero-cred"><div class="hero-cred-val">300+</div><div class="hero-cred-label">Patents (India + USA)</div></div>
+          <div class="hero-cred"><div class="hero-cred-val">TRL 8</div><div class="hero-cred-label">Technology Maturity</div></div>
+          <div class="hero-cred"><div class="hero-cred-val">22+</div><div class="hero-cred-label">Live Sites</div></div>
+          <div class="hero-cred"><div class="hero-cred-val">2.5yr</div><div class="hero-cred-label">PoC Validations</div></div>
+        </div>
+      </div>
+
+      <div class="hero-card reveal reveal-delay-2">
+        <div class="hero-card-header">
+          <span class="status-dot"></span>
+          <span>Technology Validation Status</span>
+        </div>
+        <div class="status-rows">
+          <div class="status-row"><span class="status-row-label">Platform Status</span><span class="status-row-val green">Pre-Commercial Validation</span></div>
+          <div class="status-row"><span class="status-row-label">PoC Validations</span><span class="status-row-val green">Completed</span></div>
+          <div class="status-row"><span class="status-row-label">TEC Certification</span><span class="status-row-val green">Certified</span></div>
+          <div class="status-row"><span class="status-row-label">C-DOT Qualification</span><span class="status-row-val green">Testing Completed</span></div>
+          <div class="status-row"><span class="status-row-label">Commercial Phase</span><span class="status-row-val blue">Preparing for Operator Trials</span></div>
+          <div class="status-row"><span class="status-row-label">32TR Massive MIMO ULPI</span><span class="status-row-val amber">O-RAN Compliant</span></div>
+        </div>
+        <div class="hero-card-certs">
+          <span class="cert-chip">O-RAN 7.2x</span>
+          <span class="cert-chip">3GPP Rel-15/16</span>
+          <span class="cert-chip">SA · NSA · FWA</span>
+          <span class="cert-chip">C-DOT Qualified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="trust-bar">
+  <div class="trust-inner">
+    <span class="trust-item">C-DOT</span>
+    <span class="trust-item">BSNL</span>
+    <span class="trust-item">MeitY</span>
+    <span class="trust-item highlight">Altera (Intel)</span>
+    <span class="trust-item">TEC</span>
+    <span class="trust-item">DST</span>
+    <span class="trust-item">Sharp SSIC</span>
+    <span class="trust-item">IIT Hyderabad</span>
+    <span class="trust-item">3GPP</span>
+    <span class="trust-item">O-RAN Alliance</span>
+  </div>
+</div>
+
+<!-- NARRATIVE -->
+<section class="narrative-section" id="about">
+  <div class="container">
+    <div class="narrative-grid">
+      <div class="narrative-text reveal">
+        <div class="sec-overline">About WiSig Networks</div>
+        <div class="sec-title">From deep-tech research to<br>pre-commercial validation.</div>
+        <p>WiSig Networks builds global-standard 5G Open RAN infrastructure from the ground up — <strong>from silicon to system software</strong>. Designed and engineered in India, incubated at IIT Hyderabad, and backed by India's multi-ministry R&D ecosystem, we have completed the journey from laboratory research to advanced pre-commercial validation, now preparing for operator-led commercial deployment.</p>
+        <p>Our portfolio spans the <strong>complete 5G Standalone ecosystem</strong>: O-RAN compliant Massive MIMO radio units with patented ULPI technology, cloud-native baseband, indigenous 5G core, and India's first NB-IoT system-on-chip. Every product is certified, field-hardened, and engineered for carrier-grade operation.</p>
+        <div class="narrative-metrics">
+          <div class="n-metric"><div class="n-metric-val">300+</div><div class="n-metric-label">Patents (India + USA)</div></div>
+          <div class="n-metric"><div class="n-metric-val">Many</div><div class="n-metric-label">Standard-Essential Patents</div></div>
+          <div class="n-metric"><div class="n-metric-val">1st</div><div class="n-metric-label">Indian NB-IoT SoC</div></div>
+          <div class="n-metric"><div class="n-metric-val">6G</div><div class="n-metric-label">Research Accepted at 3GPP</div></div>
+        </div>
+      </div>
+      <div class="timeline-col reveal reveal-delay-2">
+        <div class="timeline-item"><div class="timeline-year">2017–2019</div><div class="timeline-event">Research & Foundation</div><div class="timeline-desc">Founded at IIT Hyderabad. Core signal processing research. First patent filings. C-DOT partnership established.</div></div>
+        <div class="timeline-item"><div class="timeline-year">2020–2022</div><div class="timeline-event">Platform Development & Field Trials</div><div class="timeline-desc">Full-stack 5G SA platform built. 22+ PoC sites deployed. PM Modi briefed at India Mobile Congress 2022. G20 demonstration.</div></div>
+        <div class="timeline-item"><div class="timeline-year">2023–2025</div><div class="timeline-event">PoC Validations Completed</div><div class="timeline-desc">2.5-year C-DOT qualification testing completed. TEC certified. FWA use case validated. MWC Barcelona 2023 & 2025. Sharp SSIC partnership. 3GPP 6G contributions.</div></div>
+        <div class="timeline-item"><div class="timeline-year">2026</div><div class="timeline-event">Advanced Validation & Pre-Commercial Phase</div><div class="timeline-desc">Production 32T32R ULPI radios demonstrated at MWC 2026. Altera Agilex partnership. Entering extended operator validation prior to commercial scale deployment.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ULPI TECHNOLOGY -->
+<section class="ulpi-section" id="technology">
+  <div class="container">
+    <div class="ulpi-header reveal">
+      <div class="sec-overline light">Breakthrough Technology</div>
+      <div class="sec-title light">ULPI: Redefining uplink performance<br>for 5G and beyond.</div>
+      <div class="sec-desc light" style="margin: 16px auto 0;">Our proprietary Uplink Performance Improvement technology performs advanced signal processing inside the radio unit — with up to ~10× cell-edge uplink improvement observed in controlled field validation scenarios, potentially improving the economics of rural 5G deployment by reducing site density requirements.</div>
+    </div>
+    <div class="ulpi-grid reveal">
+      <div class="ulpi-card">
+        <div class="ulpi-card-label a">ULPI Class A</div>
+        <h4>DMRS-BF-EQ — Equalization in O-RU</h4>
+        <p>Channel estimation and equalization performed entirely within the radio unit. Only equalized user data layers traverse the fronthaul — minimizing bandwidth requirements while maximizing cell-edge uplink performance. Optimized for cost-sensitive FWA deployments.</p>
+      </div>
+      <div class="ulpi-card">
+        <div class="ulpi-card-label b">ULPI Class B</div>
+        <h4>DMRS-BF-NEQ — Advanced Multi-Cell Processing</h4>
+        <p>DMRS-based beamforming in O-RU with equalization at O-DU. Both data and reference signals traverse the fronthaul, enabling interference suppression, joint multi-cell coordination, and maximum flexibility for dense urban deployments.</p>
+      </div>
+    </div>
+    <div class="ulpi-impact reveal">
+      <div class="ulpi-stat"><div class="ulpi-stat-val">~10×</div><div class="ulpi-stat-label">UL Cell-Edge Gain (Field Validated)</div></div>
+      <div class="ulpi-stat"><div class="ulpi-stat-val">32T32R</div><div class="ulpi-stat-label">Massive MIMO</div></div>
+      <div class="ulpi-stat"><div class="ulpi-stat-val">16</div><div class="ulpi-stat-label">Spatial Layers</div></div>
+      <div class="ulpi-stat"><div class="ulpi-stat-val">Patented</div><div class="ulpi-stat-label">Global IP (India + USA)</div></div>
+    </div>
+    <div class="global-context reveal">
+      <div class="global-context-icon">🌍</div>
+      <div>
+        <h5>Global Context: Competing with the Best</h5>
+        <p>In August 2025, AT&T, Ericsson, and Fujitsu announced the first Open RAN call using ULPI-class technology — a major global milestone. WiSig has built the actual hardware from the ground up: a complete 32T32R Massive MIMO ULPI radio with patented global IP (India + USA), fully compliant with 2025 O-RAN specifications. Engineered to meet global carrier-grade benchmarks and designed to compete with leading international vendors upon commercial rollout.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline">Product Portfolio</div>
+      <div class="sec-title">Pre-commercial systems validated across<br>multi-site deployments.</div>
+      <div class="sec-desc">Complete 5G Standalone ecosystem built from first principles. Certified. Engineered for carrier-grade operation. Validated through extensive PoC trials and C-DOT qualification testing.</div>
+    </div>
+    <div class="products-grid">
+      <div class="product-card flagship reveal">
+        <div class="pc-icon blue">📡</div>
+        <h3>32T32R Massive MIMO Radio Unit</h3>
+        <div class="pc-sub">O-RAN 7.2x Compliant · ULPI Enabled</div>
+        <p>Flagship O-RU with patented ULPI technology. SU-MIMO and MU-MIMO beamforming with up to 16 spatial layers. Powered by Altera Agilex FPGAs. Production-grade, weatherproof outdoor enclosure.</p>
+        <div class="pc-specs"><span class="pc-spec">n78 Band</span><span class="pc-spec">100 MHz BW</span><span class="pc-spec">1.4 Gbps DL</span><span class="pc-spec">ULPI Class A/B</span><span class="pc-spec">Altera Agilex</span></div>
+      </div>
+      <div class="product-card reveal reveal-delay-1">
+        <div class="pc-icon blue">⚙️</div>
+        <h3>Cloud RAN Platform</h3>
+        <div class="pc-sub">O-DU + O-CU + 5G Core</div>
+        <p>ULPI-compliant DU-CU baseband platform with indigenous 5G SA core. Fully integrated, jointly optimized, and validated end-to-end through extensive field trials.</p>
+        <div class="pc-specs"><span class="pc-spec">3GPP Rel-15/16</span><span class="pc-spec">SA + NSA</span><span class="pc-spec">VoNR</span><span class="pc-spec">Network Slicing</span></div>
+      </div>
+      <div class="product-card reveal reveal-delay-2">
+        <div class="pc-icon emerald">📶</div>
+        <h3>FWA CPE Portfolio</h3>
+        <div class="pc-sub">Fixed Wireless Access Terminals</div>
+        <p>Hardened outdoor and indoor CPE terminals optimized for 5G FWA. Pole-mounted with custom software stack. Purpose-built for rural broadband and campus deployments.</p>
+        <div class="pc-specs"><span class="pc-spec">Outdoor Hardened</span><span class="pc-spec">Pole Mount</span><span class="pc-spec">Custom SW</span><span class="pc-spec">Wi-Fi Backhaul</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="solutions-section" style="padding:72px 0; background:var(--w-snow);">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline">Solution Areas</div>
+      <div class="sec-title">Use-case driven deployment scenarios.</div>
+      <div class="sec-desc">WiSig's 5G platform addresses distinct operator and enterprise deployment requirements. Each solution leverages the same validated full-stack architecture, tailored to specific coverage, capacity, and latency needs.</div>
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:24px; margin-top:36px;">
+      <div class="reveal" style="padding:28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <div style="font-size:1.6rem; margin-bottom:12px;">🏡</div>
+        <h4 style="font-size:1rem; margin-bottom:8px; color:var(--w-ink);">Rural Broadband (FWA)</h4>
+        <p style="font-size:0.82rem; color:var(--w-muted); line-height:1.65;">Fixed Wireless Access for unserved and underserved areas. ULPI technology extends uplink cell-edge coverage, potentially reducing site density requirements in rural deployment scenarios. Validated in live PoC at Chimnapur village smart classroom.</p>
+      </div>
+      <div class="reveal" style="padding:28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <div style="font-size:1.6rem; margin-bottom:12px;">🏥</div>
+        <h4 style="font-size:1rem; margin-bottom:8px; color:var(--w-ink);">Campus & Healthcare</h4>
+        <p style="font-size:0.82rem; color:var(--w-muted); line-height:1.65;">Private 5G networks for hospital campuses, educational institutions, and enterprise environments requiring dedicated coverage. PoC validated at NIMS Hospital with stable broadband across multi-building campus.</p>
+      </div>
+      <div class="reveal" style="padding:28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <div style="font-size:1.6rem; margin-bottom:12px;">🏭</div>
+        <h4 style="font-size:1rem; margin-bottom:8px; color:var(--w-ink);">Private 5G / Industry 4.0</h4>
+        <p style="font-size:0.82rem; color:var(--w-muted); line-height:1.65;">Dedicated 5G SA network for manufacturing, logistics, and industrial IoT. Low-latency URLLC capabilities with full network slicing support. Designed for integration with enterprise IT environments.</p>
+      </div>
+      <div class="reveal" style="padding:28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <div style="font-size:1.6rem; margin-bottom:12px;">📶</div>
+        <h4 style="font-size:1rem; margin-bottom:8px; color:var(--w-ink);">Macro Capacity Infill</h4>
+        <p style="font-size:0.82rem; color:var(--w-muted); line-height:1.65;">O-RAN compliant Massive MIMO radio units for operator macro network densification. 32T32R beamforming with up to 16 spatial layers. Designed for multi-operator, multi-vendor Open RAN architectures.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="arch-section">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="sec-overline" style="justify-content:center;">System Architecture</div>
+      <div class="sec-title">End-to-end O-RAN 7.2x Split Architecture</div>
+    </div>
+    <div class="arch-flow reveal">
+      <div class="arch-node active"><div class="arch-node-icon">📡</div><div class="arch-node-name">O-RU</div><div class="arch-node-detail">32TRX Massive MIMO<br>ULPI Technology<br>n78 · 100 MHz</div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node"><div class="arch-node-icon">⚙️</div><div class="arch-node-name">O-DU</div><div class="arch-node-detail">L1 PHY · MAC · RLC<br>Real-time scheduling<br>O-RAN 7.2x FH</div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node"><div class="arch-node-icon">🧠</div><div class="arch-node-name">O-CU</div><div class="arch-node-detail">RRC · PDCP<br>SA + NSA modes<br>Mobility · Slicing</div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node"><div class="arch-node-icon">☁️</div><div class="arch-node-name">5G Core</div><div class="arch-node-detail">Indigenous SA Core<br>FWA Optimized<br>Subscriber Mgmt</div></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node"><div class="arch-node-icon">📶</div><div class="arch-node-name">FWA CPE</div><div class="arch-node-detail">Hardened Outdoor<br>Pole-mounted<br>Custom SW Stack</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section class="specs-section" id="specs">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline">Technical Specifications</div>
+      <div class="sec-title">5G NR gNodeB — System Specifications</div>
+      <div class="sec-desc">Carrier-grade specifications validated across 22+ field sites and 25+ lab environments. Rigorously benchmarked by C-DOT over 2.5 years.</div>
+    </div>
+    <div class="specs-headline reveal">
+      <div class="spec-hero"><div class="spec-hero-val">1.4 Gbps</div><div class="spec-hero-label">Peak DL Throughput</div></div>
+      <div class="spec-hero"><div class="spec-hero-val">32TRX</div><div class="spec-hero-label">Massive MIMO</div></div>
+      <div class="spec-hero"><div class="spec-hero-val">SA+NSA</div><div class="spec-hero-label">Deployment Modes</div></div>
+      <div class="spec-hero"><div class="spec-hero-val">100 MHz</div><div class="spec-hero-label">Channel Bandwidth</div></div>
+    </div>
+    <div class="specs-grid">
+      <div class="spec-card reveal">
+        <div class="spec-card-header"><span class="icon">📡</span> Radio Unit (O-RU)</div>
+        <div class="spec-rows">
+          <div class="spec-row"><span class="key">Antenna Config</span><span class="val highlight">32TRX Massive MIMO</span></div>
+          <div class="spec-row"><span class="key">MIMO Downlink</span><span class="val">MU-MIMO · Beamforming</span></div>
+          <div class="spec-row"><span class="key">MIMO Uplink</span><span class="val highlight">ULPI (Patented)</span></div>
+          <div class="spec-row"><span class="key">Frequency Band</span><span class="val">n78 (3.3–3.67 GHz)</span></div>
+          <div class="spec-row"><span class="key">Channel BW</span><span class="val">Up to 100 MHz</span></div>
+          <div class="spec-row"><span class="key">Split Architecture</span><span class="val">O-RAN 7.2x</span></div>
+          <div class="spec-row"><span class="key">ULPI Cell-Edge Gain</span><span class="val highlight">Up to ~10× (field validated)</span></div>
+          <div class="spec-row"><span class="key">Variants</span><span class="val">32TR · 8TR · 4TR</span></div>
+        </div>
+      </div>
+      <div class="spec-card reveal reveal-delay-1">
+        <div class="spec-card-header"><span class="icon">📊</span> Capacity & Performance</div>
+        <div class="spec-rows">
+          <div class="spec-row"><span class="key">Peak DL Throughput</span><span class="val highlight">Up to 1.4 Gbps</span></div>
+          <div class="spec-row"><span class="key">DL MIMO Layers</span><span class="val">Up to 16 layers</span></div>
+          <div class="spec-row"><span class="key">MU-MIMO</span><span class="val">Dynamic DL Scheduling</span></div>
+          <div class="spec-row"><span class="key">Cells per DU</span><span class="val">3 / 6 cells</span></div>
+          <div class="spec-row"><span class="key">Modulation</span><span class="val">Up to 256QAM DL/UL</span></div>
+          <div class="spec-row"><span class="key">3GPP Release</span><span class="val">Rel-15 / Rel-16</span></div>
+          <div class="spec-row"><span class="key">Fronthaul</span><span class="val">eCPRI over Ethernet</span></div>
+          <div class="spec-row"><span class="key">Security</span><span class="val">Hardware Root of Trust</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="compliance-strip reveal">
+      <span class="comp-chip glow">3GPP Rel-15/16</span>
+      <span class="comp-chip glow">O-RAN Alliance</span>
+      <span class="comp-chip">TEC Certified</span>
+      <span class="comp-chip">C-DOT Qualified 2.5yr</span>
+      <span class="comp-chip">C-DOT Qualification Tested</span>
+      <span class="comp-chip">TRL 8</span>
+      <span class="comp-chip">SA + NSA Tested</span>
+      <span class="comp-chip">FWA Optimized</span>
+      <span class="comp-chip">Cloud RAN Ready</span>
+      <span class="comp-chip">VoNR Supported</span>
+    </div>
+  </div>
+</section>
+
+<!-- ENTERPRISE READINESS -->
+<section style="padding:56px 0; background:var(--w-snow);">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline">Enterprise Readiness</div>
+      <div class="sec-title">Lifecycle architecture designed for<br>operator-grade operations.</div>
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:24px; margin-top:32px;">
+      <div class="reveal" style="padding:24px 28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <h4 style="font-size:0.88rem; font-weight:700; margin-bottom:8px; color:var(--w-ink);">NMS / EMS Integration</h4>
+        <p style="font-size:0.8rem; color:var(--w-muted); line-height:1.65;">NMS/EMS integration validated in PoC environments. Commercial-scale lifecycle tooling — including fault management, remote provisioning, and software upgrade frameworks — in roadmap for operator rollout phase.</p>
+      </div>
+      <div class="reveal" style="padding:24px 28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <h4 style="font-size:0.88rem; font-weight:700; margin-bottom:8px; color:var(--w-ink);">Commercial Support Model</h4>
+        <p style="font-size:0.8rem; color:var(--w-muted); line-height:1.65;">Commercial support architecture under development, including NMS integration, lifecycle support, and structured operator SLAs aligned to operator procurement frameworks for commercial rollout phase.</p>
+      </div>
+      <div class="reveal" style="padding:24px 28px; background:white; border-radius:14px; border:1px solid rgba(0,0,0,0.06);">
+        <h4 style="font-size:0.88rem; font-weight:700; margin-bottom:8px; color:var(--w-ink);">Manufacturing Scale-Up</h4>
+        <p style="font-size:0.8rem; color:var(--w-muted); line-height:1.65;">Scalable manufacturing partnerships aligned for commercial ramp-up phase. Hardware design optimized for volume production with established component supply chains.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPLOYMENTS -->
+<section class="deploy-section" id="deployments">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline">Multi-Site PoC & Field Validation Completed</div>
+      <div class="sec-title">Advancing toward structured operator-led<br>commercial deployment.</div>
+      <div class="sec-desc">After 2.5 years of rigorous C-DOT qualification testing, 22+ live traffic sites, and FWA use case validation, WiSig systems are positioned for extended operator evaluation as part of future commercial procurement cycles.</div>
+    </div>
+    <div class="deploy-stats reveal">
+      <div class="deploy-stat"><div class="deploy-stat-val">22+</div><div class="deploy-stat-label">PoC & Trial Sites</div></div>
+      <div class="deploy-stat"><div class="deploy-stat-val">25+</div><div class="deploy-stat-label">Lab Environments</div></div>
+      <div class="deploy-stat"><div class="deploy-stat-val">4</div><div class="deploy-stat-label">International R&D Sites</div></div>
+      <div class="deploy-stat"><div class="deploy-stat-val">2.5yr</div><div class="deploy-stat-label">C-DOT Qualification</div></div>
+      <div class="deploy-stat"><div class="deploy-stat-val">TRL 8</div><div class="deploy-stat-label">System Qualified</div></div>
+    </div>
+    <div class="deploy-cards">
+      <div class="deploy-card reveal">
+        <div class="deploy-card-visual"><div class="icon">🏥</div><div class="tag">● LIVE TRAFFIC</div></div>
+        <div class="deploy-card-body">
+          <h4>NIMS Hospital, Hyderabad — 5G FWA Campus Network</h4>
+          <div class="deploy-type">Healthcare · Live Site · SA Mode</div>
+          <p>Live 5G FWA deployment at one of Telangana's largest public hospitals.</p>
+          <p style="margin:8px 0 4px;"><strong style="color:var(--w-ink); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">Challenge:</strong> <span style="font-size:0.82rem; color:var(--w-muted);">Limited fibre reach across multi-building hospital campus. Outpatient departments, labs, and staff areas without reliable broadband.</span></p>
+          <p style="margin:0 0 4px;"><strong style="color:var(--w-ink); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">Solution:</strong> <span style="font-size:0.82rem; color:var(--w-muted);">5G FWA deployment with rooftop gNB (32TR Massive MIMO), FWA CPEs across buildings, Wi-Fi access points serving institutional traffic. Full SA mode.</span></p>
+          <p style="margin:0 0 10px;"><strong style="color:var(--w-ink); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">Result:</strong> <span style="font-size:0.82rem; color:var(--w-muted);">Stable broadband connectivity across multi-building campus during PoC phase. Real patients and staff using 5G-powered internet.</span></p>
+          <div class="deploy-chips"><span class="deploy-chip">Live FWA Traffic</span><span class="deploy-chip">32TR Massive MIMO</span><span class="deploy-chip">SA Mode</span><span class="deploy-chip">Wi-Fi Backhaul</span></div>
+        </div>
+      </div>
+      <div class="deploy-card reveal">
+        <div class="deploy-card-visual"><div class="icon">🏫</div><div class="tag">● LIVE TRAFFIC</div></div>
+        <div class="deploy-card-body">
+          <h4>Chimnapur Village, Sangareddy — 5G Smart Classroom</h4>
+          <div class="deploy-type">Education · Rural FWA · First Broadband</div>
+          <p>Rural government school — first broadband connectivity ever delivered to this village.</p>
+          <p style="margin:8px 0 4px;"><strong style="color:var(--w-ink); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">Challenge:</strong> <span style="font-size:0.82rem; color:var(--w-muted);">Zero broadband connectivity. Fibre infrastructure absent. Students without access to digital learning tools.</span></p>
+          <p style="margin:0 0 4px;"><strong style="color:var(--w-ink); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">Solution:</strong> <span style="font-size:0.82rem; color:var(--w-muted);">5G BTS delivering wireless backhaul to school premises. Smart TV enabled for interactive digital lessons via 5G FWA CPE.</span></p>
+          <p style="margin:0 0 10px;"><strong style="color:var(--w-ink); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;">Result:</strong> <span style="font-size:0.82rem; color:var(--w-muted);">First broadband connectivity delivered to this village school during PoC phase. Demonstrated to Secretary MeitY.</span></p>
+          <div class="deploy-chips"><span class="deploy-chip">Rural FWA</span><span class="deploy-chip">Smart Classroom</span><span class="deploy-chip">First Broadband</span><span class="deploy-chip">MeitY Showcase</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="validation-banner reveal">
+      <div><h4>C-DOT Qualification Testing — Completed Over 2.5 Years</h4><p>Rigorous KPI benchmarking: uptime, throughput, concurrent subscribers, call quality. FWA use case validated.</p></div>
+      <div class="validation-badges"><span class="v-badge">TEC Certified</span><span class="v-badge">C-DOT Qualification Tested</span><span class="v-badge">FWA Use Case Validated</span></div>
+    </div>
+    <div class="showcase-row reveal">
+      <span class="showcase-chip">PM Modi Briefed (IMC 2022)</span>
+      <span class="showcase-chip">MWC Barcelona 2023, 2025 & 2026</span>
+      <span class="showcase-chip">G20 India Demo</span>
+      <span class="showcase-chip">Secretary MeitY Showcase</span>
+      <span class="showcase-chip">International R&D: Japan, USA</span>
+    </div>
+
+    <div class="reveal" style="margin-top:32px; padding:20px 28px; background:var(--w-snow); border:1px solid rgba(0,0,0,0.06); border-radius:12px; border-left:3px solid var(--w-blue);">
+      <p style="font-size:0.82rem; line-height:1.7; color:var(--w-muted); margin:0;">
+        <strong style="color:var(--w-charcoal);">Current Status:</strong> WiSig's 5G platform is in advanced pre-commercial validation (TRL 8). Commercial-scale deployment is subject to operator procurement processes, final certifications, and manufacturing scale-up.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio-section" id="portfolio">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline light">Extended Portfolio</div>
+      <div class="sec-title light">From 5G infrastructure to IoT silicon<br>and defence-grade communications.</div>
+    </div>
+    <div class="portfolio-grid">
+      <div class="port-card reveal">
+        <div class="port-card-overline amber">NB-IoT Silicon</div>
+        <h3>Koala NB-IoT SoC</h3>
+        <p>India's first indigenously designed 3GPP-compliant NB-IoT system-on-chip. MeitY DLI scheme supported. GEO + LEO satellite NTN ready. Edge AI with neural compression for intelligent IoT at the edge.</p>
+        <div class="port-tags"><span class="port-tag">3GPP Rel-13/14</span><span class="port-tag">MeitY DLI</span><span class="port-tag">Edge AI</span><span class="port-tag">NTN Satellite</span></div>
+      </div>
+      <div class="port-card reveal reveal-delay-1">
+        <div class="port-card-overline emerald">WisEdge Defence</div>
+        <h3>Tactical 5G for Defence & Strategic Networks</h3>
+        <p>Subsidiary applying WiSig 5G IP to defence: man-portable, vehicle-mounted, and fixed tactical communications. Indigenous, secure, sovereign.</p>
+        <div class="port-tags"><span class="port-tag">Tactical 5G</span><span class="port-tag">Maritime</span><span class="port-tag">C-UAS</span><span class="port-tag">Private 5G</span></div>
+      </div>
+      <div class="port-card full reveal">
+        <div class="port-card-overline blue">Target Markets</div>
+        <h3>Target Deployment Sectors</h3>
+        <div class="port-card-grid">
+          <div class="port-mini"><div class="icon">🏘️</div><h5>Rural Broadband</h5><p>FWA to unserved villages via Digital Bharat Nidhi</p></div>
+          <div class="port-mini"><div class="icon">🏥</div><h5>Healthcare</h5><p>Hospital campus 5G networks — NIMS live</p></div>
+          <div class="port-mini"><div class="icon">🎓</div><h5>Education</h5><p>Smart classrooms via 5G in rural schools</p></div>
+          <div class="port-mini"><div class="icon">📡</div><h5>Telecom Operators</h5><p>C-DOT qualified · SA/NSA/FWA for carriers</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IP & 6G -->
+<section class="ip-section" id="research">
+  <div class="container">
+    <div class="ip-banner reveal">
+      <div class="ip-banner-val">300+ Patents (India + USA)</div>
+      <p>Substantial contributor to 3GPP standards with many standard-essential patents. Global IP portfolio spans waveform design, Massive MIMO, ULPI, Open RAN, NB-IoT, and 6G technologies.</p>
+      <div class="ip-orgs"><span class="ip-org">3GPP RAN</span><span class="ip-org">TSDSI Governing Council</span><span class="ip-org">O-RAN Alliance</span><span class="ip-org">ITU-R WP 5D</span><span class="ip-org">IEEE</span></div>
+    </div>
+    <div class="reveal">
+      <div class="sec-overline">6G Research</div>
+      <div class="sec-title">6G-ready architecture and<br>standards leadership.</div>
+      <div class="sec-desc">Current platform designed for software upgrade to 3GPP Rel-21 (6G). Pioneering research accepted at 3GPP RAN #108 Prague.</div>
+    </div>
+    <div class="sixg-cards" style="margin-top:32px;">
+      <div class="sixg-card reveal"><div class="sixg-card-tag blue">Novel Waveform</div><h4>OTFDM Waveform</h4><p>Orthogonal Time-Frequency Division Multiplexing targeted for IMT-2030. Ultra-low latency single-symbol transmission, 500 km/h mobility, low PAPR.</p></div>
+      <div class="sixg-card reveal reveal-delay-1"><div class="sixg-card-tag amber">Spectrum Extension</div><h4>FR3 Upper Mid-Band</h4><p>Frequency Range 3 extension in development. Upper mid-band spectrum for enhanced capacity and coverage — critical for 6G requirements.</p></div>
+      <div class="sixg-card reveal reveal-delay-2"><div class="sixg-card-tag emerald">Advanced MIMO</div><h4>Structural MIMO</h4><p>Advanced MIMO architecture meeting IMT-2030 performance targets. Joint development with Sharp SSIC for beyond-5G field demonstrations.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS & PRESS -->
+<section class="news-section" id="news">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-overline">News & Press</div>
+      <div class="sec-title">Latest from WiSig Networks.</div>
+    </div>
+
+    <!-- Featured -->
+    <div class="news-headline reveal">
+      <div><iframe src="https://www.youtube.com/embed/H1M5z2P8MHI?start=1&autoplay=0" allowfullscreen loading="lazy"></iframe></div>
+      <div>
+        <div class="nh-badge">IMC 2022 · National Milestone</div>
+        <h4>PM Modi Briefed on Indigenous 5G at India Mobile Congress</h4>
+        <p>Prof. Kiran Kuchi demonstrated WiSig's end-to-end indigenous 5G system to PM Modi. C-DOT–WiSig Open RAN agreement signed. Live rural telemedicine demo via 5G. Recognized as national 5G capability showcase.</p>
+      </div>
+    </div>
+
+    <!-- News Grid -->
+    <div class="news-grid reveal">
+      <div class="news-card">
+        <div class="nc-source">MWC Barcelona 2026</div>
+        <div class="nc-title">32T32R Massive MIMO ULPI Radios Demonstrated at MWC 2026</div>
+        <div class="nc-excerpt">Pre-commercial production radios with patented ULPI technology on Altera Agilex FPGAs. Live demonstrations at the Altera booth, Hall 3 #3D5Ex.</div>
+      </div>
+      <div class="news-card">
+        <div class="nc-source">3GPP RAN #108 · Prague 2025</div>
+        <div class="nc-title">WiSig's OTFDM & Structural MIMO Accepted for 6G Study</div>
+        <div class="nc-excerpt">Global consortium backs WiSig's waveform innovations within the newly approved 6G Study Item at 3GPP.</div>
+      </div>
+      <div class="news-card">
+        <div class="nc-source">Sharp SSIC · May 2025</div>
+        <div class="nc-title">Sharp & WiSig: Beyond 5G / 6G Field Demonstrations</div>
+        <div class="nc-excerpt">ASUKA SDR-Box SoC UE validated with WiSig Open RAN. Expanding to FWA, MC-PTT, V2X, and satellite NB-IoT.</div>
+      </div>
+    </div>
+    <div class="news-grid reveal" style="margin-top:20px;">
+      <div class="news-card">
+        <div class="nc-source">MWC Barcelona 2025</div>
+        <div class="nc-title">Next-Gen O-RAN Massive MIMO ULPI PoC Demonstrated</div>
+        <div class="nc-excerpt">O-RAN 7.2x ULPI demonstration — Massive MIMO uplink equaliser integrated within the O-RU for superior cell-edge coverage. Joint showcase with Altera.</div>
+      </div>
+      <div class="news-card">
+        <div class="nc-source">Telangana FWA Deployment</div>
+        <div class="nc-title">Live 5G FWA at NIMS Hospital & Rural Smart Classrooms</div>
+        <div class="nc-excerpt">5G FWA systems carrying live subscriber traffic at hospitals, schools, and rural sites across Telangana during PoC validation phase.</div>
+      </div>
+      <div class="news-card">
+        <div class="nc-source">G20 India · 2023</div>
+        <div class="nc-title">Indigenous 5G Demonstrated at G20 India Summit</div>
+        <div class="nc-excerpt">WiSig's end-to-end 5G platform showcased as India's indigenous telecom capability to G20 delegates and international media.</div>
+      </div>
+    </div>
+    <div class="news-grid reveal" style="margin-top:20px;">
+      <div class="news-card">
+        <div class="nc-source">MeitY · Secretary Briefing</div>
+        <div class="nc-title">5G Smart Classroom Demonstrated to Secretary MeitY</div>
+        <div class="nc-excerpt">Chimnapur village deployment — first broadband connectivity to a rural government school — demonstrated to senior MeitY officials.</div>
+      </div>
+      <div class="news-card">
+        <div class="nc-source">C-DOT Partnership</div>
+        <div class="nc-title">2.5-Year C-DOT Qualification Testing Completed</div>
+        <div class="nc-excerpt">Rigorous KPI benchmarking across 22+ PoC sites and 25+ lab environments. Full-stack 5G SA system qualified for commercial readiness.</div>
+      </div>
+      <div class="news-card">
+        <div class="nc-source">TEC Certification</div>
+        <div class="nc-title">TEC Certification Achieved for 5G gNodeB Platform</div>
+        <div class="nc-excerpt">WiSig's 5G NR base station platform receives Telecommunications Engineering Centre certification — a critical milestone for commercial deployment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="sec-overline" style="justify-content:center;">Partner With Us</div>
+      <div class="sec-title" style="text-align:center;">Global-standard Open RAN technology.<br>Designed and engineered in India.</div>
+      <div class="sec-desc" style="text-align:center; margin: 0 auto 32px;">Whether you represent a telecom operator, government agency, defence organization, or technology partner — we welcome evaluation and partnership discussions.</div>
+      <div class="cta-actions">
+        <a href="/cdn-cgi/l/email-protection#6900070f06291e001a000e470a0604" class="btn btn-blue">Contact Our Team →</a>
+        <a href="https://wisig.com" class="btn btn-dark" target="_blank">Visit wisig.com</a>
+      </div>
+      <div style="display:flex; gap:16px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
+        <a href="#contact" class="btn" style="background:transparent; border:1px solid var(--w-blue); color:var(--w-blue); font-size:0.75rem; padding:10px 20px;">Request Technical Documentation</a>
+        <a href="#contact" class="btn" style="background:transparent; border:1px solid var(--w-blue); color:var(--w-blue); font-size:0.75rem; padding:10px 20px;">Operator Evaluation Kit</a>
+      </div>
+      <div class="contact-details">
+        <div class="cd-item"><div class="cd-icon">📍</div><div><strong>Technology Centre</strong><br>IIT Hyderabad Research Park, Kandi, Sangareddy</div></div>
+        <div class="cd-item"><div class="cd-icon">🏢</div><div><strong>Defence Division</strong><br>Wisedge Defence Solutions Pvt. Ltd.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="#technology">Technology</a><a href="#products">Products</a><a href="#specs">Specifications</a><a href="#deployments">Deployments</a><a href="#portfolio">Portfolio</a><a href="#news">News</a><a href="#research">Research</a><a href="#contact">Contact</a>
+    </div>
+    <div class="footer-tricolor"><div class="tc-s"></div><div class="tc-w"></div><div class="tc-g"></div></div>
+    <p>&copy; 2026 WiSig Networks Pvt. Ltd. & Wisedge Defence Solutions Pvt. Ltd. All rights reserved.</p>
+    <p style="margin-top: 6px;">Global-standard Open RAN · Designed and Engineered in India</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('active'); });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(function(el) { observer.observe(el); });
+
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 40); });
+
+  var toggle = document.getElementById('mobileToggle');
+  toggle.addEventListener('click', function() { nav.classList.toggle('open'); });
+  document.querySelectorAll('.nav-links a').forEach(function(a) { a.addEventListener('click', function() { nav.classList.remove('open'); }); });
+
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) { e.preventDefault(); var t = document.querySelector(this.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  });
+
+  function animateCounters() {
+    document.querySelectorAll('.hero-cred-val, .deploy-stat-val, .n-metric-val, .ulpi-stat-val, .ip-banner-val').forEach(function(el) {
+      var text = el.textContent;
+      var match = text.match(/^(\d+)/);
+      if (!match) return;
+      var target = parseInt(match[1]);
+      var suffix = text.replace(/^\d+/, '');
+      var current = 0;
+      var step = Math.max(1, Math.ceil(target / 40));
+      var timer = setInterval(function() {
+        current = Math.min(current + step, target);
+        el.textContent = current + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 25);
+    });
+  }
+  var heroObs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { animateCounters(); heroObs.disconnect(); }
+  }, { threshold: 0.3 });
+  var hero = document.querySelector('.hero');
+  if (hero) heroObs.observe(hero);
+});
+</script>
+</body>
+</html>
